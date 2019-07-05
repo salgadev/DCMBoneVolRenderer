@@ -1,6 +1,7 @@
-﻿// Derived from VTK/Examples/Cxx/Medical4.cxx
-// This example reads a volume dataset and displays it via volume rendering.
-//
+// Inspired by VTK/Examples/Cxx/Medical4.cxx
+// Reads a DICOM volume dataset and displays it via volume rendering, only bone is shown.
+// Lower density bone is rendered with 20% opacity to allow the visualization of air-cells in the skull. 
+// This allows the user to visualize the pneumatization of the patient's temporal bones
 
 #include <vtkCamera.h>
 #include <vtkColorTransferFunction.h>
