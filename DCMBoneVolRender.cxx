@@ -111,7 +111,7 @@ int main (int argc, char *argv[])
   // at the boundaries between tissue types.  The gradient is measured
   // as the amount by which the intensity changes over unit distance.
   // For most medical data, the unit distance is 1mm.
-  
+  //Default recommended by book
      vtkSmartPointer<vtkPiecewiseFunction> volumeGradientOpacity =
     vtkSmartPointer<vtkPiecewiseFunction>::New();
 	volumeGradientOpacity->AddPoint(0, 0.0); // 0 is background
