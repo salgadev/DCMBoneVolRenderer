@@ -111,20 +111,13 @@ int main (int argc, char *argv[])
   // at the boundaries between tissue types.  The gradient is measured
   // as the amount by which the intensity changes over unit distance.
   // For most medical data, the unit distance is 1mm.
-  // Piecewise Function recommended by Users Guide for 8-bit unsigned data
-  // meaning a byte-long image (8-bits)
- //volumeGradientOpacity->AddPoint(0, 0.0); // 0 is background
- //volumeGradientOpacity->AddPoint(3, 0); //
- //volumeGradientOpacity->AddPoint(6, 1.0); 
- //volumeGradientOpacity->AddPoint(255, 1.0); // 1 is the maximum
- // CT is traditionally unsigned int (16-bits) ranging from 0 to 65535.	
-    vtkSmartPointer<vtkPiecewiseFunction> volumeGradientOpacity =
+  
+     vtkSmartPointer<vtkPiecewiseFunction> volumeGradientOpacity =
     vtkSmartPointer<vtkPiecewiseFunction>::New();
- volumeGradientOpacity->AddPoint(0, 0.0); 
- volumeGradientOpacity->AddPoint(765, 0); 
- volumeGradientOpacity->AddPoint(1530, 1.0);   
-	//PENDING TEST
- 
+	volumeGradientOpacity->AddPoint(0, 0.0); // 0 is background
+	volumeGradientOpacity->AddPoint(90, 0.5); //
+	volumeGradientOpacity->AddPoint(100, 1.0); 
+	 
   // The VolumeProperty attaches the color and opacity functions to the
   // volume, and sets other volume properties.  The interpolation should
   // be set to linear to do a high-quality rendering.  The ShadeOn option
