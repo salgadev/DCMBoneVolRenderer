@@ -1,7 +1,7 @@
 // Inspired by VTK/Examples/Cxx/Medical4.cxx
 // Reads a DICOM volume dataset and displays it via volume rendering, only bone is shown.
-// Lower density bone is rendered with 20% opacity to allow the visualization of air-cells in the skull. 
-// This allows the user to visualize the pneumatization of the patient's temporal bones
+// Lower density voxels (<350 HU) are not rendered to allow the visualization of air-cells in the skull. 
+// This allows the user to visualize the pneumatization of the patient's temporal bones.
 
 #include <vtkCamera.h>
 #include <vtkColorTransferFunction.h>
@@ -75,6 +75,7 @@ int main (int argc, char *argv[])
   //D1≈right temporal bone	rgb(255,243,152)							= 1.00000,  0.95294,  0.59608	 
   //Visualize with generic anatomy BONE colors
   //Comment this block and unblock the next to use exagerated colors
+  //
   volumeColor->AddRGBPoint(0, 0.0, 0.0, 0.0); //background
   volumeColor->AddRGBPoint(150, 0.81961, 0.72549, 0.33333); //D4 bone (fine trabecular) +150 to 350 HU
   volumeColor->AddRGBPoint(350, 0.81961, 0.72549, 0.33333); //Identical color because of the threshold
@@ -84,39 +85,39 @@ int main (int argc, char *argv[])
   volumeColor->AddRGBPoint(1250,0.89804, 0.80000, 0.42745);
   volumeColor->AddRGBPoint(1251,1.00000, 0.95294, 0.59608); //D1 Bone(Dense cortical bone) > 1250
   
-  /* Comment previous block and uncomment this one to use exagerated colors
+  /*Comment previous block and uncomment this one to use exagerated colors
   //D4≈blood	rgb(216,101,79)											= 0.84706  0.39608  0.30980
   //D3≈skull	rgb(241,213,144)										= 0.94510  0.83529  0.56471
   //D2≈bone		rgb(241,214,145)										= 0.94510  0.83922  0.56863
   //D1≈teeth	rgb(255,250,220)										= 1.00000  0.98039  0.86275
-  volumeColor->AddRGBPoint(150, 0.84706  0.39608  0.30980); //D4 bone (fine trabecular) +150 to 350 HU
-  volumeColor->AddRGBPoint(350, 0.84706  0.39608  0.30980); //Identical color because of the threshold
-  volumeColor->AddRGBPoint(351, 0.94510  0.83529  0.56471); //D3 Bone (Porous trabecular bone) +350 to +850 HU
-  volumeColor->AddRGBPoint(850, 0.94510  0.83529  0.56471); // 
-  volumeColor->AddRGBPoint(851, 0.94510  0.83922  0.56863); //D2 Bone(Thick porous cortical bone) +850 to +1250 HU
-  volumeColor->AddRGBPoint(1250,0.94510  0.83922  0.56863);
-  volumeColor->AddRGBPoint(1251,1.00000  0.98039  0.86275); //D1 Bone(Dense cortical bone) > 1250
+  volumeColor->AddRGBPoint(150, 0.84706,  0.39608,  0.30980); //D4 bone (fine trabecular) +150 to 350 HU
+  volumeColor->AddRGBPoint(350, 0.84706,  0.39608,  0.30980); //Identical color because of the threshold
+  volumeColor->AddRGBPoint(351, 0.94510,  0.83529,  0.56471); //D3 Bone (Porous trabecular bone) +350 to +850 HU
+  volumeColor->AddRGBPoint(850, 0.94510,  0.83529,  0.56471); // 
+  volumeColor->AddRGBPoint(851, 0.94510,  0.83922,  0.56863); //D2 Bone(Thick porous cortical bone) +850 to +1250 HU
+  volumeColor->AddRGBPoint(1250,0.94510,  0.83922,  0.56863);
+  volumeColor->AddRGBPoint(1251,1.00000,  0.98039 , 0.86275); //D1 Bone(Dense cortical bone) > 1250
   */
   // The opacity transfer function is used to control the opacity
   // of different tissue types.
   vtkSmartPointer<vtkPiecewiseFunction> volumeScalarOpacity =
     vtkSmartPointer<vtkPiecewiseFunction>::New(); 
   volumeScalarOpacity->AddPoint(0,   0.00);
-  volumeScalarOpacity->AddPoint(150, 0.25);
-  volumeScalarOpacity->AddPoint(350, 0.50);
+  volumeScalarOpacity->AddPoint(150, 0);
+  volumeScalarOpacity->AddPoint(350, 0.8);
   volumeScalarOpacity->AddPoint(850, 1);
+  
   
   // The gradient opacity function is used to decrease the opacity
   // in the "flat" regions of the volume while maintaining the opacity
   // at the boundaries between tissue types.  The gradient is measured
   // as the amount by which the intensity changes over unit distance.
   // For most medical data, the unit distance is 1mm.
-  //Default recommended by book
-     vtkSmartPointer<vtkPiecewiseFunction> volumeGradientOpacity =
+    vtkSmartPointer<vtkPiecewiseFunction> volumeGradientOpacity =
     vtkSmartPointer<vtkPiecewiseFunction>::New();
 	volumeGradientOpacity->AddPoint(0, 0.0); // 0 is background
-	volumeGradientOpacity->AddPoint(90, 0.5); //
-	volumeGradientOpacity->AddPoint(100, 1.0); 
+	volumeGradientOpacity->AddPoint(90, 0.5);
+	volumeGradientOpacity->AddPoint(100, 1.0);
 	 
   // The VolumeProperty attaches the color and opacity functions to the
   // volume, and sets other volume properties.  The interpolation should
